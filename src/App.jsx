@@ -3,7 +3,6 @@ import InputForm from './components/InputForm'
 import DashboardSummary from './components/DashboardSummary'
 import ResultTabs from './components/ResultTabs'
 import Footer from './components/Footer'
-import MarketSidebar from './components/MarketSidebar'
 
 // 25档分配比例 (相对B防区总资金的百分比)
 const ALLOCATION_PCTS = [
@@ -46,18 +45,15 @@ export function calcOrders(zoneB, bottomPrice) {
 
 export default function App() {
   const [result, setResult] = useState(null)
-  const [ticker, setTicker] = useState('')
 
-  const handleCalculate = (t, principal) => {
-    setTicker(t)
-    setResult(calculate(t, principal))
+  const handleCalculate = (ticker, principal) => {
+    setResult(calculate(ticker, principal))
   }
 
   return (
     <div className="min-h-screen bg-gray-50 text-slate-800 font-mono">
-      {/* Header */}
       <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur-sm shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
           <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-400 flex items-center justify-center shadow-lg shadow-cyan-500/30">
             <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 17l4-8 4 4 4-6 4 10" />
@@ -74,23 +70,15 @@ export default function App() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-        <div className="flex flex-col lg:flex-row gap-6 items-start">
-          {/* 左侧 AI 市场解读 */}
-          <MarketSidebar ticker={ticker} />
-
-          {/* 右侧主内容 */}
-          <main className="flex-1 min-w-0 space-y-8">
-            <InputForm onCalculate={handleCalculate} />
-            {result && (
-              <>
-                <DashboardSummary result={result} />
-                <ResultTabs result={result} />
-              </>
-            )}
-          </main>
-        </div>
-      </div>
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+        <InputForm onCalculate={handleCalculate} />
+        {result && (
+          <>
+            <DashboardSummary result={result} />
+            <ResultTabs result={result} />
+          </>
+        )}
+      </main>
 
       <div className="h-16" />
     </div>
