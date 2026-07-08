@@ -112,7 +112,7 @@ export default function MarketSidebar({ ticker }) {
             <div className="rounded-xl bg-red-50 border border-red-200 p-3">
               <p className="text-xs text-red-600 font-semibold mb-1">获取失败</p>
               <p className="text-[10px] text-red-500 leading-relaxed">{error}</p>
-              <p className="text-[10px] text-red-400 mt-2">请确认 Vercel 环境变量 <code className="bg-red-100 px-1 rounded">ANTHROPIC_API_KEY</code> 已配置</p>
+              <p className="text-[10px] text-red-400 mt-2">请确认 Vercel 环境变量 <code className="bg-red-100 px-1 rounded">GEMINI_API_KEY</code> 已配置</p>
             </div>
           )}
 
@@ -131,7 +131,7 @@ export default function MarketSidebar({ ticker }) {
               <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
               </svg>
-              Powered by Claude
+              Powered by Gemini
             </span>
           </div>
         )}

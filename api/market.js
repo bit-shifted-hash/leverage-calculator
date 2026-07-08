@@ -1,8 +1,8 @@
 export default async function handler(req, res) {
   const { ticker } = req.query
-  const apiKey = process.env.ANTHROPIC_API_KEY
+  const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) {
-    return res.status(500).json({ error: '请在 Vercel 环境变量中配置 ANTHROPIC_API_KEY' })
+    return res.status(500).json({ error: '请在 Vercel 环境变量中配置 GEMINI_API_KEY' })
   }
 
   const today = new Date().toLocaleDateString('zh-CN', {
@@ -36,19 +36,17 @@ export default async function handler(req, res) {
 请保持简洁，控制在180字以内。如果你的知识截止日期早于今天，请在末尾注明"以上为截止训练数据的分析"。`
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 512,
-        messages: [{ role: 'user', content: prompt }],
-      }),
-    })
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { maxOutputTokens: 512, temperature: 0.7 },
+        }),
+      }
+    )
 
     if (!response.ok) {
       const err = await response.json()
@@ -56,7 +54,7 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json()
-    const commentary = data.content?.[0]?.text ?? ''
+    const commentary = data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
     res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=300')
     res.json({ commentary, ticker: ticker || null })
   } catch {
