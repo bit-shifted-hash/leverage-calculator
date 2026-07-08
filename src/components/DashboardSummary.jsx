@@ -27,13 +27,11 @@ export default function DashboardSummary({ result }) {
     setIsFetching(true)
     setFetchError('')
     try {
-      const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1m&range=1d`
-      const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(yahooUrl)}`)
+      const res = await fetch(`/api/price?ticker=${encodeURIComponent(ticker)}`)
       if (!res.ok) throw new Error()
       const data = await res.json()
-      const p = data.chart?.result?.[0]?.meta?.regularMarketPrice
-      if (!p) throw new Error()
-      setCurrentPrice(String(p))
+      if (!data.price) throw new Error()
+      setCurrentPrice(String(data.price))
     } catch {
       setFetchError('获取失败，请手动输入')
     } finally {
