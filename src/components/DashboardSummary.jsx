@@ -17,27 +17,9 @@ function StatCard({ label, value, sub, accent, large }) {
 export default function DashboardSummary({ result }) {
   const { ticker, principal, totalPool, zoneA, zoneB, bottomPrice } = result
   const [currentPrice, setCurrentPrice] = useState('')
-  const [isFetching, setIsFetching] = useState(false)
-  const [fetchError, setFetchError] = useState('')
 
   const price = parseFloat(currentPrice)
   const shares = price > 0 ? Math.floor(zoneA / price) : null
-
-  const fetchCurrentPrice = async () => {
-    setIsFetching(true)
-    setFetchError('')
-    try {
-      const res = await fetch(`/api/price?ticker=${encodeURIComponent(ticker)}`)
-      if (!res.ok) throw new Error()
-      const data = await res.json()
-      if (!data.price) throw new Error()
-      setCurrentPrice(String(data.price))
-    } catch {
-      setFetchError('获取失败，请手动输入')
-    } finally {
-      setIsFetching(false)
-    }
-  }
 
   return (
     <div className="space-y-4">
@@ -73,41 +55,17 @@ export default function DashboardSummary({ result }) {
           </div>
           <p className="text-[10px] text-slate-400 mt-1">占可用资金池 25%</p>
 
-          {/* 实时股数估算 */}
+          {/* 股数估算 */}
           <div className="mt-3 pt-3 border-t border-blue-200 space-y-2">
-            <div className="flex items-center justify-between">
-              <p className="text-xs text-slate-500">当前市价估算可买股数</p>
-              <button
-                onClick={fetchCurrentPrice}
-                disabled={isFetching}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-semibold border border-blue-300 text-blue-600 bg-white hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-              >
-                {isFetching ? (
-                  <>
-                    <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                    </svg>
-                    获取中…
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    获取实时价格
-                  </>
-                )}
-              </button>
-            </div>
+            <p className="text-xs text-slate-500">输入当前市价估算可买股数</p>
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">$</span>
                 <input
                   type="number"
                   value={currentPrice}
-                  onChange={(e) => { setCurrentPrice(e.target.value); setFetchError('') }}
-                  placeholder="自动获取或手动输入"
+                  onChange={(e) => setCurrentPrice(e.target.value)}
+                  placeholder="手动输入当前价格"
                   min="0.01"
                   step="any"
                   className="w-full bg-white border border-blue-200 rounded-lg pl-6 pr-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400/30 transition-all"
@@ -120,7 +78,6 @@ export default function DashboardSummary({ result }) {
                 </div>
               )}
             </div>
-            {fetchError && <p className="text-[10px] text-red-400">{fetchError}</p>}
             {shares !== null && (
               <p className="text-[10px] text-slate-400">
                 实际花费 {fmt(shares * price)} · 余额 {fmt(zoneA - shares * price)}
