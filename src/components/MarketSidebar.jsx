@@ -70,7 +70,7 @@ export default function MarketSidebar({ ticker }) {
               </svg>
             </div>
             <div>
-              <p className="text-xs font-bold text-white leading-tight">AI 市场解读</p>
+              <p className="text-xs font-bold text-white leading-tight">AI 市场背景分析</p>
               <p className="text-[10px] text-slate-400">
                 {fetchedTicker ? fetchedTicker : '美股大盘'}
               </p>
@@ -125,14 +125,17 @@ export default function MarketSidebar({ ticker }) {
 
         {/* Footer */}
         {updatedAt && !loading && (
-          <div className="border-t border-slate-100 px-4 py-2 flex items-center justify-between">
-            <span className="text-[10px] text-slate-400">更新于 {timeStr}</span>
-            <span className="text-[10px] text-slate-400 flex items-center gap-1">
-              <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-              </svg>
-              Powered by Gemini
-            </span>
+          <div className="border-t border-slate-100 px-4 py-2 space-y-1">
+            <p className="text-[10px] text-slate-400 italic">基于 AI 训练数据的背景分析，非实时行情</p>
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] text-slate-400">更新于 {timeStr}</span>
+              <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                Powered by Gemini
+              </span>
+            </div>
           </div>
         )}
       </div>
