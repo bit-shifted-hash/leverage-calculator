@@ -51,20 +51,20 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-mono">
+    <div className="min-h-screen bg-gray-50 text-slate-800 font-mono">
       {/* Header */}
-      <header className="sticky top-0 z-20 border-b border-slate-800 bg-slate-950/90 backdrop-blur-sm">
+      <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur-sm shadow-sm">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
-          <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-400 flex items-center justify-center shadow-lg shadow-cyan-900/40">
+          <div className="flex-shrink-0 w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-400 flex items-center justify-center shadow-lg shadow-cyan-500/30">
             <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 17l4-8 4 4 4-6 4 10" />
             </svg>
           </div>
           <div>
-            <h1 className="text-sm sm:text-base font-bold text-white leading-tight tracking-wide">
+            <h1 className="text-sm sm:text-base font-bold text-slate-900 leading-tight tracking-wide">
               Global Stock Leverage Strategy Calculator
             </h1>
-            <p className="text-[10px] sm:text-xs text-slate-500 tracking-widest mt-0.5">
+            <p className="text-[10px] sm:text-xs text-slate-400 tracking-widest mt-0.5">
               全美股通用杠杆双轨建仓战略自动计算器
             </p>
           </div>

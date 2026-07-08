@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100 antialiased;
+    @apply bg-gray-50 text-slate-800 antialiased;
   }
 
   * {
@@ -18,9 +18,9 @@
     height: 4px;
   }
   .scrollbar-thin::-webkit-scrollbar-track {
-    @apply bg-slate-800;
+    @apply bg-slate-100;
   }
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply bg-slate-600 rounded-full;
+    @apply bg-slate-300 rounded-full;
   }
 }

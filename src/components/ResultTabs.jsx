@@ -4,11 +4,11 @@ const fmt = (n) =>
   n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 const ZONE_COLORS = [
-  { border: 'border-emerald-800/50', bg: 'bg-emerald-950/30', text: 'text-emerald-300', bar: 'bg-emerald-500', badge: 'bg-emerald-900/60 text-emerald-300 border-emerald-700/50' },
-  { border: 'border-sky-800/50',     bg: 'bg-sky-950/30',     text: 'text-sky-300',     bar: 'bg-sky-500',     badge: 'bg-sky-900/60 text-sky-300 border-sky-700/50'         },
-  { border: 'border-violet-800/50',  bg: 'bg-violet-950/30',  text: 'text-violet-300',  bar: 'bg-violet-500',  badge: 'bg-violet-900/60 text-violet-300 border-violet-700/50' },
-  { border: 'border-orange-800/50',  bg: 'bg-orange-950/30',  text: 'text-orange-300',  bar: 'bg-orange-500',  badge: 'bg-orange-900/60 text-orange-300 border-orange-700/50' },
-  { border: 'border-red-800/50',     bg: 'bg-red-950/30',     text: 'text-red-300',     bar: 'bg-red-500',     badge: 'bg-red-900/60 text-red-300 border-red-700/50'         },
+  { border: 'border-emerald-200', bg: 'bg-emerald-50', text: 'text-emerald-700', bar: 'bg-emerald-500', badge: 'bg-emerald-100 text-emerald-700 border-emerald-300' },
+  { border: 'border-sky-200',     bg: 'bg-sky-50',     text: 'text-sky-700',     bar: 'bg-sky-500',     badge: 'bg-sky-100 text-sky-700 border-sky-300'             },
+  { border: 'border-violet-200',  bg: 'bg-violet-50',  text: 'text-violet-700',  bar: 'bg-violet-500',  badge: 'bg-violet-100 text-violet-700 border-violet-300'    },
+  { border: 'border-orange-200',  bg: 'bg-orange-50',  text: 'text-orange-700',  bar: 'bg-orange-500',  badge: 'bg-orange-100 text-orange-700 border-orange-300'    },
+  { border: 'border-red-200',     bg: 'bg-red-50',     text: 'text-red-700',     bar: 'bg-red-500',     badge: 'bg-red-100 text-red-700 border-red-300'             },
 ]
 
 const ADVICE = [
@@ -57,8 +57,8 @@ function FamilyTab({ result }) {
   return (
     <div className="space-y-3">
       <p className="text-xs text-slate-500 mb-4">
-        当 <span className="text-white font-semibold">{ticker}</span> 跌破 A防区保底价{' '}
-        <span className="text-amber-300 font-semibold">${bottomPrice.toFixed(2)}</span> 后，B防区自动按以下 5 大战区分批建仓：
+        当 <span className="text-slate-900 font-semibold">{ticker}</span> 跌破 A防区保底价{' '}
+        <span className="text-amber-600 font-semibold">${bottomPrice.toFixed(2)}</span> 后，B防区自动按以下 5 大战区分批建仓：
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
@@ -73,31 +73,31 @@ function FamilyTab({ result }) {
                   {z.totalPct}%
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mb-1">跌幅区间</p>
-              <p className="text-sm font-bold text-white mb-2">-{z.dropRange}</p>
-              <p className="text-xs text-slate-400 mb-1">价格区间</p>
-              <p className="text-xs text-slate-300 font-semibold mb-3">
+              <p className="text-xs text-slate-500 mb-1">跌幅区间</p>
+              <p className="text-sm font-bold text-slate-900 mb-2">-{z.dropRange}</p>
+              <p className="text-xs text-slate-500 mb-1">价格区间</p>
+              <p className="text-xs text-slate-600 font-semibold mb-3">
                 ${z.priceLow.toFixed(2)} — ${z.priceHigh.toFixed(2)}
               </p>
-              <div className="h-1 rounded-full bg-slate-800 overflow-hidden mb-2">
+              <div className="h-1 rounded-full bg-slate-200 overflow-hidden mb-2">
                 <div className={`h-full rounded-full ${c.bar}`} style={{ width: barWidth }} />
               </div>
-              <p className="text-base font-bold text-white">{fmt(z.totalAmount)}</p>
-              <p className="text-[10px] text-slate-500 mt-0.5">共 5 笔挂单</p>
+              <p className="text-base font-bold text-slate-900">{fmt(z.totalAmount)}</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">共 5 笔挂单</p>
             </div>
           )
         })}
       </div>
 
       {/* 汇总行 */}
-      <div className="rounded-xl border border-slate-700 bg-slate-800/50 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <div className="flex items-center gap-2 text-xs text-slate-400">
-          <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div className="flex items-center gap-2 text-xs text-slate-500">
+          <svg className="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           25档全部执行后 B防区总投入
         </div>
-        <p className="text-lg font-bold text-amber-300">{fmt(totalB)}</p>
+        <p className="text-lg font-bold text-amber-600">{fmt(totalB)}</p>
       </div>
     </div>
   )
@@ -129,24 +129,24 @@ function FullOrderTab({ result }) {
 
   const rowColor = (level) => {
     const g = Math.ceil(level / 5) - 1
-    return ['text-emerald-400', 'text-sky-400', 'text-violet-400', 'text-orange-400', 'text-red-400'][g]
+    return ['text-emerald-600', 'text-sky-600', 'text-violet-600', 'text-orange-600', 'text-red-600'][g]
   }
 
   const zoneBg = (level) => {
     const g = Math.ceil(level / 5) - 1
-    return ['hover:bg-emerald-950/30', 'hover:bg-sky-950/30', 'hover:bg-violet-950/30', 'hover:bg-orange-950/30', 'hover:bg-red-950/30'][g]
+    return ['hover:bg-emerald-50', 'hover:bg-sky-50', 'hover:bg-violet-50', 'hover:bg-orange-50', 'hover:bg-red-50'][g]
   }
 
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <p className="text-xs text-slate-500">共 25 档挂单 · 按 1% 步长递进</p>
+        <p className="text-xs text-slate-400">共 25 档挂单 · 按 1% 步长递进</p>
         <button
           onClick={handleCopy}
           className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold border transition-all duration-200 ${
             copied
-              ? 'bg-emerald-900/50 border-emerald-600 text-emerald-300'
-              : 'bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white'
+              ? 'bg-emerald-50 border-emerald-400 text-emerald-700'
+              : 'bg-white border-slate-300 text-slate-600 hover:border-slate-400 hover:text-slate-900'
           }`}
         >
           {copied ? (
@@ -167,10 +167,10 @@ function FullOrderTab({ result }) {
         </button>
       </div>
 
-      <div className="overflow-x-auto scrollbar-thin rounded-xl border border-slate-800" ref={tableRef}>
+      <div className="overflow-x-auto scrollbar-thin rounded-xl border border-slate-200" ref={tableRef}>
         <table className="w-full text-xs sm:text-sm">
           <thead>
-            <tr className="border-b border-slate-800 bg-slate-900/80">
+            <tr className="border-b border-slate-200 bg-slate-50">
               <th className="text-left px-3 sm:px-4 py-3 text-slate-500 font-semibold tracking-wider whitespace-nowrap">档位</th>
               <th className="text-left px-3 sm:px-4 py-3 text-slate-500 font-semibold tracking-wider whitespace-nowrap">触发跌幅</th>
               <th className="text-right px-3 sm:px-4 py-3 text-slate-500 font-semibold tracking-wider whitespace-nowrap">执行价格</th>
@@ -178,28 +178,28 @@ function FullOrderTab({ result }) {
               <th className="text-left px-3 sm:px-4 py-3 text-slate-500 font-semibold tracking-wider whitespace-nowrap hidden sm:table-cell">向导建议</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/60">
+          <tbody className="divide-y divide-slate-100">
             {orders.map((o, i) => {
               const zoneStart = Math.ceil(o.level / 5) * 5 - 4 === o.level
               return (
                 <tr
                   key={o.level}
-                  className={`transition-colors ${zoneBg(o.level)} ${zoneStart && i > 0 ? 'border-t-2 border-slate-700' : ''}`}
+                  className={`transition-colors ${zoneBg(o.level)} ${zoneStart && i > 0 ? 'border-t-2 border-slate-300' : ''}`}
                 >
                   <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
                     <span className={`font-bold ${rowColor(o.level)}`}>#{String(o.level).padStart(2, '0')}</span>
                   </td>
                   <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
-                    <span className="text-slate-300">-{o.dropPct}%</span>
-                    <span className="text-slate-600 text-[10px] ml-1">({o.allocationPct}% B)</span>
+                    <span className="text-slate-700">-{o.dropPct}%</span>
+                    <span className="text-slate-400 text-[10px] ml-1">({o.allocationPct}% B)</span>
                   </td>
                   <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap">
-                    <span className="text-white font-semibold">${o.execPrice.toFixed(4)}</span>
+                    <span className="text-slate-900 font-semibold">${o.execPrice.toFixed(4)}</span>
                   </td>
                   <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap">
                     <span className={`font-bold ${rowColor(o.level)}`}>{fmt(o.buyAmount)}</span>
                   </td>
-                  <td className="px-3 sm:px-4 py-3 text-slate-500 hidden sm:table-cell whitespace-nowrap">
+                  <td className="px-3 sm:px-4 py-3 text-slate-400 hidden sm:table-cell whitespace-nowrap">
                     {ADVICE[i]}
                   </td>
                 </tr>
@@ -213,21 +213,21 @@ function FullOrderTab({ result }) {
 }
 
 export default function ResultTabs({ result }) {
-  const [tab, setTab] = useState(0)
+  const [tab, setTab] = useState(1)
   const tabs = ['家庭极简看板', '全量挂单清单']
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-sm p-6 sm:p-8">
+    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-6 sm:p-8">
       {/* Tab switcher */}
-      <div className="flex gap-1 mb-6 bg-slate-800/60 rounded-xl p-1 w-fit">
+      <div className="flex gap-1 mb-6 bg-slate-100 rounded-xl p-1 w-fit">
         {tabs.map((t, i) => (
           <button
             key={t}
             onClick={() => setTab(i)}
             className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200 ${
               tab === i
-                ? 'bg-slate-700 text-white shadow-sm'
-                : 'text-slate-500 hover:text-slate-300'
+                ? 'bg-white text-slate-900 shadow-sm'
+                : 'text-slate-500 hover:text-slate-700'
             }`}
           >
             {t}
