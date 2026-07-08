@@ -1,7 +1,7 @@
+import { useState } from 'react'
+
 const fmt = (n) =>
   n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })
-
-const fmtPct = (n) => `${(n * 100).toFixed(2)}%`
 
 function StatCard({ label, value, sub, accent, large }) {
   return (
@@ -16,6 +16,10 @@ function StatCard({ label, value, sub, accent, large }) {
 
 export default function DashboardSummary({ result }) {
   const { ticker, principal, totalPool, zoneA, zoneB, bottomPrice } = result
+  const [currentPrice, setCurrentPrice] = useState('')
+
+  const price = parseFloat(currentPrice)
+  const shares = price > 0 ? Math.floor(zoneA / price) : null
 
   return (
     <div className="space-y-4">
@@ -50,11 +54,35 @@ export default function DashboardSummary({ result }) {
             <div className="h-full w-1/4 bg-gradient-to-r from-blue-600 to-blue-400 rounded-full" />
           </div>
           <p className="text-[10px] text-slate-400 mt-1">占可用资金池 25%</p>
-          <div className="mt-3 pt-3 border-t border-blue-200 flex items-baseline justify-between">
-            <span className="text-xs text-slate-500">按保底价 <span className="text-slate-700 font-semibold">${bottomPrice.toFixed(2)}</span> 可买入</span>
-            <span className="text-lg font-bold text-blue-600">
-              {Math.floor(zoneA / bottomPrice).toLocaleString()} <span className="text-xs font-semibold text-blue-400">股</span>
-            </span>
+
+          {/* 实时股数估算 */}
+          <div className="mt-3 pt-3 border-t border-blue-200 space-y-2">
+            <p className="text-xs text-slate-500">输入当前市价估算可买股数</p>
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">$</span>
+                <input
+                  type="number"
+                  value={currentPrice}
+                  onChange={(e) => setCurrentPrice(e.target.value)}
+                  placeholder="输入实时价格"
+                  min="0.01"
+                  step="any"
+                  className="w-full bg-white border border-blue-200 rounded-lg pl-6 pr-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400/30 transition-all"
+                />
+              </div>
+              {shares !== null && (
+                <div className="flex-shrink-0 text-right">
+                  <span className="text-xl font-bold text-blue-600">{shares.toLocaleString()}</span>
+                  <span className="text-xs font-semibold text-blue-400 ml-1">股</span>
+                </div>
+              )}
+            </div>
+            {shares !== null && (
+              <p className="text-[10px] text-slate-400">
+                实际花费 {fmt(shares * price)} · 余额 {fmt(zoneA - shares * price)}
+              </p>
+            )}
           </div>
         </div>
 
