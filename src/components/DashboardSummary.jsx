@@ -19,7 +19,7 @@ export default function DashboardSummary({ result }) {
   const [currentPrice, setCurrentPrice] = useState('')
 
   const price = parseFloat(currentPrice)
-  const shares = price > 0 ? Math.floor(zoneA / price) : null
+  const shares = price > 0 ? (zoneA / price).toFixed(4) : null
 
   return (
     <div className="space-y-4">
@@ -80,7 +80,7 @@ export default function DashboardSummary({ result }) {
             </div>
             {shares !== null && (
               <p className="text-[10px] text-slate-400">
-                实际花费 {fmt(shares * price)} · 余额 {fmt(zoneA - shares * price)}
+                实际花费 {fmt(parseFloat(shares) * price)} · 余额 {fmt(zoneA - parseFloat(shares) * price)}
               </p>
             )}
           </div>
