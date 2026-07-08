@@ -32,6 +32,7 @@ export default function MarketSidebar({ ticker }) {
   const [error, setError] = useState('')
   const [updatedAt, setUpdatedAt] = useState(null)
   const [fetchedTicker, setFetchedTicker] = useState(null)
+  const [hasNews, setHasNews] = useState(false)
 
   const fetchCommentary = useCallback(async (t) => {
     setLoading(true)
@@ -44,6 +45,7 @@ export default function MarketSidebar({ ticker }) {
       if (!res.ok) throw new Error(data.error || '请求失败')
       setCommentary(data.commentary)
       setFetchedTicker(t || null)
+      setHasNews(data.hasNews ?? false)
       setUpdatedAt(new Date())
     } catch (e) {
       setError(e.message)
@@ -126,7 +128,9 @@ export default function MarketSidebar({ ticker }) {
         {/* Footer */}
         {updatedAt && !loading && (
           <div className="border-t border-slate-100 px-4 py-2 space-y-1">
-            <p className="text-[10px] text-slate-400 italic">基于 AI 训练数据的背景分析，非实时行情</p>
+            <p className="text-[10px] text-slate-400 italic">
+              {hasNews ? '基于 Yahoo Finance 实时新闻 · AI 解读' : '基于 AI 训练数据的背景分析'}
+            </p>
             <div className="flex items-center justify-between">
               <span className="text-[10px] text-slate-400">更新于 {timeStr}</span>
               <span className="text-[10px] text-slate-400 flex items-center gap-1">
