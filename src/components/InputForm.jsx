@@ -15,7 +15,7 @@ export default function InputForm({ onCalculate }) {
 
     if (!ticker.trim()) return setError('请输入股票/ETF 代码')
     if (!p || p <= 0) return setError('总本金必须大于 0')
-    if (!b || b <= 0) return setError('A防区被套保底价必须大于 0')
+    if (!b || b <= 0) return setError('A区被套价格必须大于 0')
 
     setError('')
     onCalculate(ticker.trim().toUpperCase(), p, b)
@@ -80,7 +80,7 @@ export default function InputForm({ onCalculate }) {
 
           {/* A防区被套保底价 */}
           <div>
-            <label className="block text-xs text-slate-500 mb-2 tracking-wide">A防区被套保底价 (USD)</label>
+            <label className="block text-xs text-slate-500 mb-2 tracking-wide">A区被套价格 (USD)</label>
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">$</span>
               <input
