@@ -13,11 +13,14 @@ const ALLOCATION_PCTS = [
   5.0, 5.5, 6.0, 6.5, 7.0,   // 跌 21%~25%
 ]
 
-function calculate(ticker, principal, bottomPrice) {
+function calculate(ticker, principal) {
   const totalPool = principal * 0.75
   const zoneA = totalPool * 0.25
   const zoneB = totalPool * 0.75
+  return { ticker, principal, totalPool, zoneA, zoneB }
+}
 
+export function calcOrders(zoneB, bottomPrice) {
   const orders = ALLOCATION_PCTS.map((pct, i) => {
     const dropPct = i + 1
     const execPrice = bottomPrice * (1 - dropPct / 100)
@@ -25,7 +28,6 @@ function calculate(ticker, principal, bottomPrice) {
     return { level: i + 1, dropPct, allocationPct: pct, execPrice, buyAmount }
   })
 
-  // 5大战区汇总
   const warZones = Array.from({ length: 5 }, (_, g) => {
     const group = orders.slice(g * 5, g * 5 + 5)
     return {
@@ -38,16 +40,14 @@ function calculate(ticker, principal, bottomPrice) {
     }
   })
 
-  const expectedAvgPrice = bottomPrice * 0.8354
-
-  return { ticker, principal, bottomPrice, totalPool, zoneA, zoneB, orders, warZones, expectedAvgPrice }
+  return { orders, warZones, expectedAvgPrice: bottomPrice * 0.8354 }
 }
 
 export default function App() {
   const [result, setResult] = useState(null)
 
-  const handleCalculate = (ticker, principal, bottomPrice) => {
-    setResult(calculate(ticker, principal, bottomPrice))
+  const handleCalculate = (ticker, principal) => {
+    setResult(calculate(ticker, principal))
   }
 
   return (
@@ -77,7 +77,6 @@ export default function App() {
           <>
             <DashboardSummary result={result} />
             <ResultTabs result={result} />
-            <Footer result={result} />
           </>
         )}
       </main>

@@ -15,7 +15,7 @@ function StatCard({ label, value, sub, accent, large }) {
 }
 
 export default function DashboardSummary({ result }) {
-  const { ticker, principal, totalPool, zoneA, zoneB, bottomPrice } = result
+  const { ticker, principal, totalPool, zoneA, zoneB } = result
   const [currentPrice, setCurrentPrice] = useState('')
 
   const price = parseFloat(currentPrice)
@@ -100,7 +100,7 @@ export default function DashboardSummary({ result }) {
           <div className="mt-3 h-1 rounded-full bg-amber-200 overflow-hidden">
             <div className="h-full w-3/4 bg-gradient-to-r from-amber-600 to-amber-400 rounded-full" />
           </div>
-          <p className="text-[10px] text-slate-400 mt-1">占可用资金池 75% · 触发价 ≤ ${bottomPrice.toFixed(2)}</p>
+          <p className="text-[10px] text-slate-400 mt-1">占可用资金池 75% · 被套后在下方输入触发价</p>
         </div>
       </div>
     </div>

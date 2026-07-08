@@ -5,20 +5,16 @@ const PRESETS = ['QQQ', 'VGT', 'SMH', 'TQQQ', 'SOXL', 'SPY', 'NVDA']
 export default function InputForm({ onCalculate }) {
   const [ticker, setTicker] = useState('')
   const [principal, setPrincipal] = useState('')
-  const [bottomPrice, setBottomPrice] = useState('')
   const [error, setError] = useState('')
 
   const handleSubmit = (e) => {
     e.preventDefault()
     const p = parseFloat(principal)
-    const b = parseFloat(bottomPrice)
 
-    if (!ticker.trim()) return setError('请输入股票/ETF 代码')
     if (!p || p <= 0) return setError('总本金必须大于 0')
-    if (!b || b <= 0) return setError('A区被套价格必须大于 0')
 
     setError('')
-    onCalculate(ticker.trim().toUpperCase(), p, b)
+    onCalculate(ticker.trim().toUpperCase(), p)
   }
 
   return (
@@ -47,10 +43,10 @@ export default function InputForm({ onCalculate }) {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {/* 股票代码 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* 股票代码（可选） */}
           <div>
-            <label className="block text-xs text-slate-500 mb-2 tracking-wide">股票 / ETF 代码</label>
+            <label className="block text-xs text-slate-500 mb-2 tracking-wide">股票 / ETF 代码 <span className="text-slate-400 normal-case">(可选)</span></label>
             <input
               type="text"
               value={ticker}
@@ -72,23 +68,6 @@ export default function InputForm({ onCalculate }) {
                 onChange={(e) => setPrincipal(e.target.value)}
                 placeholder="100000"
                 min="1"
-                step="any"
-                className="w-full bg-white border border-slate-300 rounded-xl pl-8 pr-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 transition-all"
-              />
-            </div>
-          </div>
-
-          {/* A防区被套保底价 */}
-          <div>
-            <label className="block text-xs text-slate-500 mb-2 tracking-wide">A区被套价格 (USD)</label>
-            <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">$</span>
-              <input
-                type="number"
-                value={bottomPrice}
-                onChange={(e) => setBottomPrice(e.target.value)}
-                placeholder="450.00"
-                min="0.01"
                 step="any"
                 className="w-full bg-white border border-slate-300 rounded-xl pl-8 pr-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 transition-all"
               />

@@ -1,4 +1,6 @@
 import { useState, useRef } from 'react'
+import { calcOrders } from '../App'
+import Footer from './Footer'
 
 const fmt = (n) =>
   n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -214,28 +216,66 @@ function FullOrderTab({ result }) {
 
 export default function ResultTabs({ result }) {
   const [tab, setTab] = useState(1)
+  const [bottomPriceInput, setBottomPriceInput] = useState('')
   const tabs = ['家庭极简看板', '全量挂单清单']
 
+  const bottomPrice = parseFloat(bottomPriceInput)
+  const hasBottomPrice = bottomPrice > 0
+  const orderData = hasBottomPrice ? calcOrders(result.zoneB, bottomPrice) : null
+  const enriched = orderData ? { ...result, bottomPrice, ...orderData } : null
+
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-6 sm:p-8">
-      {/* Tab switcher */}
-      <div className="flex gap-1 mb-6 bg-slate-100 rounded-xl p-1 w-fit">
-        {tabs.map((t, i) => (
-          <button
-            key={t}
-            onClick={() => setTab(i)}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200 ${
-              tab === i
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
-          >
-            {t}
-          </button>
-        ))}
+    <div className="space-y-4">
+      {/* B区被套价格输入 */}
+      <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 sm:p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-1.5 h-5 rounded-full bg-gradient-to-b from-amber-400 to-orange-500" />
+          <h2 className="text-sm font-semibold text-slate-600 tracking-wider uppercase">B防区激活</h2>
+          <span className="ml-2 text-xs text-slate-400">被套后输入以生成挂单清单</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="relative w-64">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">$</span>
+            <input
+              type="number"
+              value={bottomPriceInput}
+              onChange={(e) => setBottomPriceInput(e.target.value)}
+              placeholder="输入A区被套价格"
+              min="0.01"
+              step="any"
+              className="w-full bg-white border border-amber-300 rounded-xl pl-8 pr-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-400/30 transition-all"
+            />
+          </div>
+          {hasBottomPrice && (
+            <span className="text-xs text-amber-600 font-semibold">B防区已激活 · 触发价 ${bottomPrice.toFixed(2)}</span>
+          )}
+        </div>
       </div>
 
-      {tab === 0 ? <FamilyTab result={result} /> : <FullOrderTab result={result} />}
+      {/* 挂单清单（被套后才显示） */}
+      {enriched && (
+        <>
+          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-6 sm:p-8">
+            <div className="flex gap-1 mb-6 bg-slate-100 rounded-xl p-1 w-fit">
+              {tabs.map((t, i) => (
+                <button
+                  key={t}
+                  onClick={() => setTab(i)}
+                  className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-200 ${
+                    tab === i
+                      ? 'bg-white text-slate-900 shadow-sm'
+                      : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+            {tab === 0 ? <FamilyTab result={enriched} /> : <FullOrderTab result={enriched} />}
+          </div>
+          <Footer result={enriched} />
+        </>
+      )}
     </div>
   )
 }
