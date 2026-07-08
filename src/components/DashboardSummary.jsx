@@ -50,6 +50,12 @@ export default function DashboardSummary({ result }) {
             <div className="h-full w-1/4 bg-gradient-to-r from-blue-600 to-blue-400 rounded-full" />
           </div>
           <p className="text-[10px] text-slate-400 mt-1">占可用资金池 25%</p>
+          <div className="mt-3 pt-3 border-t border-blue-200 flex items-baseline justify-between">
+            <span className="text-xs text-slate-500">按保底价 <span className="text-slate-700 font-semibold">${bottomPrice.toFixed(2)}</span> 可买入</span>
+            <span className="text-lg font-bold text-blue-600">
+              {Math.floor(zoneA / bottomPrice).toLocaleString()} <span className="text-xs font-semibold text-blue-400">股</span>
+            </span>
+          </div>
         </div>
 
         {/* B防区 */}
