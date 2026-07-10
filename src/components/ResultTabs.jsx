@@ -288,7 +288,8 @@ function FullOrderTab({ result }) {
 
 export default function ResultTabs({ result }) {
   const [tab, setTab] = useState(1)
-  const [bottomPriceInput, setBottomPriceInput] = useState('')
+  const bpKey = `leverage-bottom-${result.ticker}`
+  const [bottomPriceInput, setBottomPriceInput] = useState(() => localStorage.getItem(bpKey) || '')
   const tabs = ['家庭极简看板', '全量挂单清单']
 
   const bottomPrice = parseFloat(bottomPriceInput)
@@ -311,7 +312,14 @@ export default function ResultTabs({ result }) {
             <input
               type="number"
               value={bottomPriceInput}
-              onChange={(e) => setBottomPriceInput(e.target.value)}
+              onChange={(e) => {
+                setBottomPriceInput(e.target.value)
+                if (e.target.value) {
+                  localStorage.setItem(bpKey, e.target.value)
+                } else {
+                  localStorage.removeItem(bpKey)
+                }
+              }}
               placeholder="输入A区被套价格"
               min="0.01"
               step="any"

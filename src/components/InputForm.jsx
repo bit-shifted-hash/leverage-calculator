@@ -1,11 +1,18 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const PRESETS = ['QQQ', 'VGT', 'SMH', 'TQQQ', 'SOXL', 'SPY', 'NVDA']
 
 export default function InputForm({ onCalculate }) {
-  const [ticker, setTicker] = useState('')
-  const [principal, setPrincipal] = useState('')
+  const [ticker, setTicker] = useState(() => localStorage.getItem('leverage-ticker') || '')
+  const [principal, setPrincipal] = useState(() => localStorage.getItem('leverage-principal') || '')
   const [error, setError] = useState('')
+
+  // 自动恢复上次计算结果
+  useEffect(() => {
+    const t = localStorage.getItem('leverage-ticker')
+    const p = parseFloat(localStorage.getItem('leverage-principal'))
+    if (p > 0) onCalculate(t || '', p)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -13,8 +20,11 @@ export default function InputForm({ onCalculate }) {
 
     if (!p || p <= 0) return setError('总本金必须大于 0')
 
+    const t = ticker.trim().toUpperCase()
+    localStorage.setItem('leverage-ticker', t)
+    localStorage.setItem('leverage-principal', String(p))
     setError('')
-    onCalculate(ticker.trim().toUpperCase(), p)
+    onCalculate(t, p)
   }
 
   return (

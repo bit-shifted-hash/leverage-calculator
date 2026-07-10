@@ -75,7 +75,7 @@ export default function App() {
         {result && (
           <>
             <DashboardSummary result={result} />
-            <ResultTabs result={result} />
+            <ResultTabs key={result.ticker} result={result} />
           </>
         )}
       </main>
