@@ -108,7 +108,31 @@ function FamilyTab({ result }) {
 function FullOrderTab({ result }) {
   const { ticker, orders } = result
   const [copied, setCopied] = useState(false)
+  const lsKey = `leverage-last-buy-${ticker}`
+  const [lastBuyLevel, setLastBuyLevel] = useState(() => {
+    const v = localStorage.getItem(lsKey)
+    return v !== null ? parseInt(v, 10) : null
+  })
   const tableRef = useRef(null)
+
+  // 计算每档的累积投入
+  let runningTotal = 0
+  const ordersWithCumulative = orders.map((o) => {
+    runningTotal += o.buyAmount
+    return { ...o, cumulative: runningTotal }
+  })
+
+  const handleCheckLevel = (level) => {
+    setLastBuyLevel(prev => {
+      const next = prev === level ? null : level
+      if (next === null) {
+        localStorage.removeItem(lsKey)
+      } else {
+        localStorage.setItem(lsKey, String(next))
+      }
+      return next
+    })
+  }
 
   const handleCopy = async () => {
     const text = buildTextTable(ticker, orders)
@@ -134,10 +158,13 @@ function FullOrderTab({ result }) {
     return ['text-emerald-600', 'text-sky-600', 'text-violet-600', 'text-orange-600', 'text-red-600'][g]
   }
 
-  const zoneBg = (level) => {
+  const zoneBg = (level, isChecked) => {
+    if (isChecked) return 'bg-amber-50'
     const g = Math.ceil(level / 5) - 1
     return ['hover:bg-emerald-50', 'hover:bg-sky-50', 'hover:bg-violet-50', 'hover:bg-orange-50', 'hover:bg-red-50'][g]
   }
+
+  const lastBuyOrder = lastBuyLevel != null ? ordersWithCumulative.find(o => o.level === lastBuyLevel) : null
 
   return (
     <div>
@@ -169,25 +196,67 @@ function FullOrderTab({ result }) {
         </button>
       </div>
 
+      {/* 上次加仓提示 */}
+      {lastBuyOrder && (
+        <div className="mb-4 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+          <div className="flex items-center gap-2">
+            <svg className="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            <span className="text-xs font-semibold text-amber-700">
+              上次加仓：#{String(lastBuyOrder.level).padStart(2, '0')} 档 · 跌幅 -{lastBuyOrder.dropPct}% · 执行价 ${lastBuyOrder.execPrice.toFixed(4)}
+            </span>
+          </div>
+          <div className="flex items-center gap-4 ml-6 sm:ml-0">
+            <div className="text-xs text-amber-600">
+              本档买入 <span className="font-bold">{fmt(lastBuyOrder.buyAmount)}</span>
+            </div>
+            <div className="text-xs text-amber-600">
+              累计已投入 <span className="font-bold text-amber-800">{fmt(lastBuyOrder.cumulative)}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="overflow-x-auto scrollbar-thin rounded-xl border border-slate-200" ref={tableRef}>
         <table className="w-full text-xs sm:text-sm">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-50">
+              <th className="text-center px-2 sm:px-3 py-3 text-slate-400 font-semibold tracking-wider whitespace-nowrap w-8" title="标记上次加仓点位">上次</th>
               <th className="text-left px-3 sm:px-4 py-3 text-slate-500 font-semibold tracking-wider whitespace-nowrap">档位</th>
               <th className="text-left px-3 sm:px-4 py-3 text-slate-500 font-semibold tracking-wider whitespace-nowrap">触发跌幅</th>
               <th className="text-right px-3 sm:px-4 py-3 text-slate-500 font-semibold tracking-wider whitespace-nowrap">执行价格</th>
               <th className="text-right px-3 sm:px-4 py-3 text-slate-500 font-semibold tracking-wider whitespace-nowrap">买入金额</th>
+              <th className="text-right px-3 sm:px-4 py-3 text-slate-500 font-semibold tracking-wider whitespace-nowrap hidden sm:table-cell">累计投入</th>
               <th className="text-left px-3 sm:px-4 py-3 text-slate-500 font-semibold tracking-wider whitespace-nowrap hidden sm:table-cell">向导建议</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {orders.map((o, i) => {
+            {ordersWithCumulative.map((o, i) => {
               const zoneStart = Math.ceil(o.level / 5) * 5 - 4 === o.level
+              const isChecked = lastBuyLevel === o.level
               return (
                 <tr
                   key={o.level}
-                  className={`transition-colors ${zoneBg(o.level)} ${zoneStart && i > 0 ? 'border-t-2 border-slate-300' : ''}`}
+                  className={`transition-colors ${zoneBg(o.level, isChecked)} ${zoneStart && i > 0 ? 'border-t-2 border-slate-300' : ''} ${isChecked ? 'ring-1 ring-inset ring-amber-300' : ''}`}
                 >
+                  <td className="px-2 sm:px-3 py-3 text-center whitespace-nowrap">
+                    <button
+                      onClick={() => handleCheckLevel(o.level)}
+                      className={`w-4 h-4 rounded border-2 flex items-center justify-center mx-auto transition-all ${
+                        isChecked
+                          ? 'bg-amber-400 border-amber-400'
+                          : 'border-slate-300 hover:border-amber-400'
+                      }`}
+                      title="标记为上次加仓点位"
+                    >
+                      {isChecked && (
+                        <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </button>
+                  </td>
                   <td className="px-3 sm:px-4 py-3 whitespace-nowrap">
                     <span className={`font-bold ${rowColor(o.level)}`}>#{String(o.level).padStart(2, '0')}</span>
                   </td>
@@ -200,6 +269,9 @@ function FullOrderTab({ result }) {
                   </td>
                   <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap">
                     <span className={`font-bold ${rowColor(o.level)}`}>{fmt(o.buyAmount)}</span>
+                  </td>
+                  <td className="px-3 sm:px-4 py-3 text-right whitespace-nowrap hidden sm:table-cell">
+                    <span className="text-slate-500 text-xs">{fmt(o.cumulative)}</span>
                   </td>
                   <td className="px-3 sm:px-4 py-3 text-slate-400 hidden sm:table-cell whitespace-nowrap">
                     {ADVICE[i]}
