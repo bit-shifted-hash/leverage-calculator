@@ -25,6 +25,17 @@ const fmtShares = (n) =>
 export default function BulletPlanCalculator() {
   const [cash, setCash] = useState(() => localStorage.getItem('bullet-plan-cash') || '')
   const [price, setPrice] = useState(() => localStorage.getItem('bullet-plan-price') || '')
+  const [checked, setChecked] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('bullet-plan-checked') || '{}') } catch { return {} }
+  })
+
+  const toggleChecked = (level) => {
+    setChecked(prev => {
+      const next = { ...prev, [level]: !prev[level] }
+      localStorage.setItem('bullet-plan-checked', JSON.stringify(next))
+      return next
+    })
+  }
 
   const totalCash = parseFloat(cash)
   const currentPrice = parseFloat(price)
@@ -132,6 +143,7 @@ export default function BulletPlanCalculator() {
             <table className="w-full text-xs sm:text-sm">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50">
+                  <th className="px-3 sm:px-4 py-3 text-slate-500 font-semibold tracking-wider whitespace-nowrap">已执行</th>
                   <th className="text-left px-3 sm:px-4 py-3 text-slate-500 font-semibold tracking-wider whitespace-nowrap">档位</th>
                   <th className="text-left px-3 sm:px-4 py-3 text-slate-500 font-semibold tracking-wider whitespace-nowrap">触发跌幅</th>
                   <th className="text-right px-3 sm:px-4 py-3 text-slate-500 font-semibold tracking-wider whitespace-nowrap">执行价格</th>
@@ -145,13 +157,22 @@ export default function BulletPlanCalculator() {
                 {orders.map((o, i) => {
                   const group = Math.ceil(o.level / 5) - 1
                   const zoneStart = o.level % 5 === 1
+                  const isDone = !!checked[o.level]
                   return (
                     <tr
                       key={o.level}
-                      className={`transition-colors ${ZONE_BG_HOVER[group]} ${zoneStart && i > 0 ? 'border-t-2 border-slate-300' : ''}`}
+                      className={`transition-colors ${isDone ? 'opacity-40' : ZONE_BG_HOVER[group]} ${zoneStart && i > 0 ? 'border-t-2 border-slate-300' : ''}`}
                     >
+                      <td className="px-3 sm:px-4 py-2.5 text-center whitespace-nowrap">
+                        <input
+                          type="checkbox"
+                          checked={isDone}
+                          onChange={() => toggleChecked(o.level)}
+                          className="w-4 h-4 rounded accent-violet-500 cursor-pointer"
+                        />
+                      </td>
                       <td className="px-3 sm:px-4 py-2.5 whitespace-nowrap">
-                        <span className={`font-bold ${ROW_COLORS[group]}`}>#{String(o.level).padStart(2, '0')}</span>
+                        <span className={`font-bold ${isDone ? 'line-through text-slate-400' : ROW_COLORS[group]}`}>#{String(o.level).padStart(2, '0')}</span>
                       </td>
                       <td className="px-3 sm:px-4 py-2.5 whitespace-nowrap">
                         <span className="text-slate-700">-{o.dropPct}%</span>
