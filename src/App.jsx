@@ -2,6 +2,7 @@ import { useState } from 'react'
 import InputForm from './components/InputForm'
 import DashboardSummary from './components/DashboardSummary'
 import ResultTabs from './components/ResultTabs'
+import BulletPlanCalculator from './components/BulletPlanCalculator'
 import Footer from './components/Footer'
 
 // 25档分配比例 (相对B防区总资金的百分比)
@@ -78,6 +79,7 @@ export default function App() {
             <ResultTabs key={result.ticker} result={result} />
           </>
         )}
+        <BulletPlanCalculator />
       </main>
 
       <div className="h-16" />
